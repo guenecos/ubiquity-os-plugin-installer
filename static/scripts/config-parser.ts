@@ -1,6 +1,6 @@
 import YAML from "yaml";
 import { Plugin, PluginConfig } from "../types/plugins";
-import { buildPluginIdentifiers, canonicalizePluginConfig, findPluginConfigIndex, removePluginConfig } from "./rendering/plugin-entry-compatibility";
+import { buildPluginIdentifiers, canonicalizePluginConfig, findPluginConfigIndex, removePluginConfig } from "./rendering/legacy-plugin-entry-compatibility";
 import { Octokit } from "@octokit/rest";
 import { toastNotification } from "../utils/toaster";
 import { CONFIG_FULL_PATH, CONFIG_ORG_REPO } from "@ubiquity-os/plugin-sdk/constants";
