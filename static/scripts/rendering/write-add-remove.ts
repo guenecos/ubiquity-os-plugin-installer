@@ -46,6 +46,8 @@ export function writeNewConfig(renderer: ManifestRenderer, option: "add" | "remo
 
   renderer.configParser.loadConfig();
   const normalizedPluginName = normalizePluginName(pluginManifest.manifest.name);
+  const selectedPluginName = localStorage.getItem("selectedPluginName");
+  const pluginName = selectedPluginName || normalizedPluginName;
   const pluginUrl = pluginManifest.homepageUrl;
 
   if (!pluginUrl) {
@@ -59,7 +61,7 @@ export function writeNewConfig(renderer: ManifestRenderer, option: "add" | "remo
   const plugin: Plugin = {
     uses: [
       {
-        plugin: pluginUrl,
+        plugin: `ubiquity-os-marketplace/${pluginName}`,
         with: newConfig,
       },
     ],
@@ -68,9 +70,9 @@ export function writeNewConfig(renderer: ManifestRenderer, option: "add" | "remo
   removePushNotificationIfPresent();
 
   if (option === "add") {
-    handleAddPlugin(renderer, plugin, pluginManifest.manifest);
+    handleAddPlugin(renderer, plugin, pluginManifest.manifest, pluginUrl);
   } else if (option === "remove") {
-    handleRemovePlugin(renderer, plugin, pluginManifest.manifest);
+    handleRemovePlugin(renderer, plugin, pluginManifest.manifest, pluginUrl);
   }
 }
 
@@ -81,8 +83,8 @@ function removePushNotificationIfPresent() {
   }
 }
 
-function handleAddPlugin(renderer: ManifestRenderer, plugin: Plugin, pluginManifest: Manifest): void {
-  renderer.configParser.addPlugin(plugin);
+function handleAddPlugin(renderer: ManifestRenderer, plugin: Plugin, pluginManifest: Manifest, legacyPluginUrl: string): void {
+  renderer.configParser.addPlugin(plugin, legacyPluginUrl);
   toastNotification(`Configuration for ${pluginManifest.name} saved successfully. Do you want to push to GitHub?`, {
     type: "success",
     actionText: "Push to GitHub",
@@ -91,8 +93,8 @@ function handleAddPlugin(renderer: ManifestRenderer, plugin: Plugin, pluginManif
   });
 }
 
-function handleRemovePlugin(renderer: ManifestRenderer, plugin: Plugin, pluginManifest: Manifest): void {
-  renderer.configParser.removePlugin(plugin);
+function handleRemovePlugin(renderer: ManifestRenderer, plugin: Plugin, pluginManifest: Manifest, legacyPluginUrl: string): void {
+  renderer.configParser.removePlugin(plugin, legacyPluginUrl);
   toastNotification(`Configuration for ${pluginManifest.name} removed successfully. Do you want to push to GitHub?`, {
     type: "success",
     actionText: "Push to GitHub",
